@@ -186,7 +186,7 @@ search_tv_series() {
         echo ""
         $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .seriesName, "First Aired: " + .firstAired, "Status: " + .status, "Overview: " + .overview' --arg id "$id" < "$_TMP_FILE_SERIES"
         get_episodes "$id"
-        $_JQ -r '.[] | select(.airedSeason!=0) | "\(.firstAired)\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' < "$_TMP_FILE_EPISODES"
+        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0) | "\(.firstAired)\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' < "$_TMP_FILE_EPISODES"
     done
 }
 
