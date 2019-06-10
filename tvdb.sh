@@ -3,10 +3,14 @@
 # Fetch TV series infomation from tvdb
 #
 #/ Usage:
-#/   ./tvdb.sh <search_text>
+#/   ./tvdb.sh [-c|-f|-d <date>] <search_text>
 #/
-#/ Option:
-#/   --help:     Display this help message
+#/ Options:
+#/   -c               Filter series status equals to continuing
+#/   -f               Filter episodes aired in the future
+#/   -d <date>        Filter episodes aired after the date, format like: 1999-12-20
+#/                    -d option overrules -f
+#/   -h | --help:     Display this help message
 
 usage() {
     # Display usage message
@@ -17,8 +21,29 @@ usage() {
 set_var() {
     # Declare variables used in script
     expr "$*" : ".*--help" > /dev/null && usage
+    while getopts ":hcfd:" opt; do
+        case $opt in
+            d)
+                _DATE_AIRED="$OPTARG"
+                ;;
+            f)
+                _FUTURE_AIRED=true
+                ;;
+            c)
+                _CONTINUING_AIRED=true
+                ;;
+            h)
+                usage
+                ;;
+            \?)
+                echo "Invalid option: -$OPTARG" >&2
+                usage
+                ;;
+        esac
+    done
+    shift $((OPTIND-1))
 
-    _SEARCH_TEXT=$( echo "$@" | sed -E 's/ /%20/g')
+    _SEARCH_TEXT=$( echo "$*" | sed -E 's/ /%20/g')
     _HOST="https://api.thetvdb.com"
     _TOKEN_FILE="./.token"
     _TMP_FILE_SERIES="./.tmp.series"
@@ -141,6 +166,13 @@ get_episodes() {
     done
 }
 
+get_series_status() {
+    # Return series status from $2 data: Ended, Continuing...
+    # $1: series id
+    # $2: siries data
+    $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .status' --arg id "$1" < "$2"
+}
+
 fetch_token() {
     # Fetch token from tvdb API
     if [[ ! -f "$_TOKEN_FILE" ]]; then
@@ -179,13 +211,46 @@ refresh_token() {
     get_token_from_result "$result"
 }
 
+print_series_info() {
+    # Print out series info
+    # $1: series id
+    # $2: series data
+    $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | "-----", .seriesName, "First Aired: " + .firstAired, "Status: " + .status, "Overview: " + .overview, ""' --arg id "$1" < "$2"
+}
+
+print_episodes_info() {
+    # Print out series info
+    # $1: episodes data
+    if [[ "$_FUTURE_AIRED" == true ]]; then
+        airedDate=$(date +"%Y-%m-%d")
+    else
+        airedDate="0000-00-00"
+    fi
+
+    if [[ "$_DATE_AIRED" ]]; then
+        airedDate="$_DATE_AIRED"
+    fi
+    $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' --arg date "$airedDate"< "$1"
+}
+
 search_tv_series() {
     # Show serach results
     for id in $(get_series_id);do
         true > $_TMP_FILE_EPISODES
-        $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .seriesName, "First Aired: " + .firstAired, "Status: " + .status, "Overview: " + .overview, ""' --arg id "$id" < "$_TMP_FILE_SERIES"
-        get_episodes "$id"
-        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0) | "\(.firstAired)\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' < "$_TMP_FILE_EPISODES"
+        togglePrint=false
+
+        if [[ "$_CONTINUING_AIRED" == true ]]; then
+            if [[ $(get_series_status "$id" "$_TMP_FILE_SERIES") == "Continuing" ]]; then
+                togglePrint=true
+            fi
+        else
+            togglePrint=true
+        fi
+
+        if [[ "$togglePrint" == true ]]; then
+            print_series_info "$id" "$_TMP_FILE_SERIES"
+            get_episodes "$id" && print_episodes_info "$_TMP_FILE_EPISODES"
+        fi
     done
 }
 

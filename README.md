@@ -13,10 +13,14 @@ A script to fetch your favorite TV show information from [tvdb](https://www.thet
 
 ```
 Usage:
-  ./tvdb.sh <search_text>
+  ./tvdb.sh [-c|-f|-d <date>] <search_text>
 
-Option:
-  --help:     Display this help message
+Options:
+  -c               Filter series status equals to continuing
+  -f               Filter episodes aired in the future
+  -d <date>        Filter episodes aired after the date, format like: 1999-12-20
+                   -d option overrules -f
+  -h | --help:     Display this help message
 ```
 
 1. Declare API key, user key and user name in terminal:
@@ -37,10 +41,11 @@ Add them to `.zshrc` file if you want to run script in other terms.
 
 ### Example:
 
-- Get `One-Punch Man` episodes list:
+- Show `One-Punch Man` episodes list:
 
 ```
-./tvdb.sh one punch man
+~$ ./tvdb.sh one punch man
+-----
 One-Punch Man
 First Aired: 2015-10-04
 Status: Continuing
@@ -70,3 +75,40 @@ Overview: Saitama is a superhero who has trained so hard that his hair has falle
 2019-06-26	S2E11	Episode 11
 2019-07-03	S2E12	Episode 12
 ```
+
+- Show `One-Punch Man` episodes list aired in the future (today 2019-06-10):
+
+```
+~$ ./tvdb.sh -f one punch man
+-----
+One-Punch Man
+First Aired: 2015-10-04
+Status: Continuing
+Overview: Saitama is a superhero who has trained so hard that his hair has fallen out, and who can overcome any enemy with one punch. However, because he is so strong, he has become bored and frustrated that he wins all of his battles too easily.
+
+2019-06-12      S2E9    The Ultimate Dilemma
+2019-06-19      S2E10   Episode 10
+2019-06-26      S2E11   Episode 11
+2019-07-03      S2E12   Episode 12
+```
+
+- Show `One-Punch Man` episodes list aired after `2019-06-20`:
+
+```
+~$ ./tvdb.sh -d 2019-06-20 one punch man
+-----
+One-Punch Man
+First Aired: 2015-10-04
+Status: Continuing
+Overview: Saitama is a superhero who has trained so hard that his hair has fallen out, and who can overcome any enemy with one punch. However, because he is so strong, he has become bored and frustrated that he wins all of his battles too easily.
+
+2019-06-26      S2E11   Episode 11
+2019-07-03      S2E12   Episode 12
+```
+
+- Show `Game of Thrones` series which are continuing:
+
+```
+~$ ./tvdb.sh -c game of thrones
+```
+No results? that's right!
