@@ -1,13 +1,13 @@
 tvdb-cli
 ========
 
-A script to fetch your favorite TV show information from [tvdb](https://www.thetvdb.com/) using fast & furious [tvdb API](https://api.thetvdb.com/swagger#/)
+A script to fetch your favorite TV show information from [TheTVDB](https://www.thetvdb.com/) using fast & furious [TheTVDB API v2](https://api.thetvdb.com/swagger#/)
 
 ## Dependency
 
 - [cURL](https://curl.haxx.se/)
 - [jq](https://stedolan.github.io/jq/)
-- tvdb API key: register to get API key from [tvdb site](https://www.thetvdb.com/register)
+- TheTVDB API key: register to get API key from [TheTVDB site](https://www.thetvdb.com/register)
 
 ## How to use
 
