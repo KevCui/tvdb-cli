@@ -13,10 +13,11 @@ A script to fetch your favorite TV show information from [TheTVDB](https://www.t
 
 ```
 Usage:
-  ./tvdb.sh [-c|-f|-r|-d <date>] <search_text>
+  ./tvdb.sh [-c|-y <year_range>|-f|-r|-d <date>] <search_text>
 
 Options:
   -c               Filter series status equals to continuing
+  -y <year_range>  Filter series first aired in the range of years, like: 2000-2016
   -f               Filter episodes aired in the future
   -d <date>        Filter episodes aired after the date, format like: 1999-12-20
                    -d option overrules -f
@@ -125,6 +126,16 @@ Overview: Chernobyl dramatizes the story of the 1986 nuclear accident — one of
 2019-05-20      [9.7]   S1E3    Open Wide, O Earth
 2019-05-27      [9.6]   S1E4    The Happiness of All Mankind
 2019-06-03      [9.9]   S1E5    Vichnaya Pamyat
+...
+```
+
+- Show `Friends` episodes list, the series first aired in 1994:
+
+```
+~$ ./tvdb.sh -y 1994-1995 friends
+...
+Or
+~$ ./tvdb.sh -y 1994 friends
 ...
 ```
 

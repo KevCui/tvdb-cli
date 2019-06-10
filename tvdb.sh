@@ -3,10 +3,11 @@
 # Fetch TV series infomation from tvdb
 #
 #/ Usage:
-#/   ./tvdb.sh [-c|-f|-r|-d <date>] <search_text>
+#/   ./tvdb.sh [-c|-y <year_range>|-f|-r|-d <date>] <search_text>
 #/
 #/ Options:
 #/   -c               Filter series status equals to continuing
+#/   -y <year_range>  Filter series first aired in the range of years, like: 2000-2016
 #/   -f               Filter episodes aired in the future
 #/   -d <date>        Filter episodes aired after the date, format like: 1999-12-20
 #/                    -d option overrules -f
@@ -26,6 +27,13 @@
 #/   \e[32m- Show `One-Punch Man` episodes list aired after 2019-06-20:\e[0m
 #/     ~$ ./tvdb.sh \e[33m-d 2019-06-20\e[0m one punch man
 #/
+#/   \e[32m- Show `Friends` episodes list, the series first aired in 1994:\e[0m
+#/     ~$ ./tvdb.sh \e[33m-y 1994-1995\e[0m friends
+#/     ...
+#/     or
+#/     ~$ ./tvdb.sh \e[33m-y 1994\e[0m friends
+#/     ...
+#/
 #/   \e[32m- Show `Game of Thrones` series which is still continuing:\e[0m
 #/     ~$ ./tvdb.sh \e[33m-c\e[0m game of thrones
 
@@ -38,8 +46,14 @@ usage() {
 set_var() {
     # Declare variables used in script
     expr "$*" : ".*--help" > /dev/null && usage
-    while getopts ":hcfrd:" opt; do
+    while getopts ":hcfrd:y:" opt; do
         case $opt in
+            y)
+                _YEAR_RANGE_FIRSTAIRED="$OPTARG"
+                _MIN_YEAR_FIRSTAIRED=${_YEAR_RANGE_FIRSTAIRED%%-*}
+                _MAX_YEAR_FIRSTAIRED=${_YEAR_RANGE_FIRSTAIRED#*-}
+                check_fistaired_year_range
+                ;;
             r)
                 _SHOW_RATING=true
                 ;;
@@ -91,6 +105,14 @@ check_command() {
     # Check command if it exists
     if [[ ! "$2" ]]; then
         echo "Command \"$1\" not found!" && exit 1
+    fi
+}
+
+check_fistaired_year_range() {
+    # Check if year range is valid
+    if [[ "$_MIN_YEAR_FIRSTAIRED" -gt "$_MAX_YEAR_FIRSTAIRED" ]]; then
+        echo "Invalid year range: -y <year_range>!"
+        usage && exit 1
     fi
 }
 
@@ -193,6 +215,19 @@ get_series_status() {
     $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .status' --arg id "$1" < "$2"
 }
 
+get_series_first_aired_year() {
+    # Return year of a series first aired
+    # $1: series id
+    # $2: siries data
+    local date
+    date=$($_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .firstAired' --arg id "$1" < "$2")
+    if [[ -z "$date" ]]; then
+        echo "0"
+    else
+        date -d"$date" +%Y
+    fi
+}
+
 get_imdb_id_from_file() {
     # Return imdb id from $1
     $_JQ -r '.[] | select(.airedSeason!=0 and .firstAired>=$date) | .imdbId' --arg date "$(get_search_date)"< "$1"
@@ -280,14 +315,19 @@ search_tv_series() {
     # Show serach results
     for id in $(get_series_id);do
         true > $_TMP_FILE_EPISODES
-        togglePrint=false
+        togglePrint=true
+
+        if [[ "$_YEAR_RANGE_FIRSTAIRED" ]]; then
+            year=$(get_series_first_aired_year "$id" "$_TMP_FILE_SERIES")
+            if [[  "$year" -lt "$_MIN_YEAR_FIRSTAIRED" || "$year" -gt "$_MAX_YEAR_FIRSTAIRED" ]]; then
+                togglePrint=false
+            fi
+        fi
 
         if [[ "$_CONTINUING_AIRED" == true ]]; then
-            if [[ $(get_series_status "$id" "$_TMP_FILE_SERIES") == "Continuing" ]]; then
-                togglePrint=true
+            if [[ $(get_series_status "$id" "$_TMP_FILE_SERIES") != "Continuing" ]]; then
+                togglePrint=false
             fi
-        else
-            togglePrint=true
         fi
 
         if [[ "$togglePrint" == true ]]; then
