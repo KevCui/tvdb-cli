@@ -109,9 +109,9 @@ Overview: Saitama is a superhero who has trained so hard that his hair has falle
 2019-07-03      S2E12   Episode 12
 ```
 
-- Show `Game of Thrones` series which are continuing:
+- Show `Game of Thrones` series which is continuing:
 
 ```
 ~$ ./tvdb.sh -c game of thrones
 ```
-No results? that's right!
+No results? That's right!

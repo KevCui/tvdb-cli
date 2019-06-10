@@ -11,10 +11,23 @@
 #/   -d <date>        Filter episodes aired after the date, format like: 1999-12-20
 #/                    -d option overrules -f
 #/   -h | --help:     Display this help message
+#/
+#/ Examples:
+#/   \e[32m- Show `One-Punch Man` episodes list:\e[0m
+#/     ~$ ./tvdb.sh one punch man
+#/
+#/   \e[32m- Show `One-Punch` Man episodes list aired in the future:\e[0m
+#/     ~$ ./tvdb.sh \e[33m-f\e[0m one punch man
+#/
+#/   \e[32m- Show `One-Punch Man` episodes list aired after 2019-06-20:\e[0m
+#/     ~$ ./tvdb.sh \e[33m-d 2019-06-20\e[0m one punch man
+#/
+#/   \e[32m- Show `Game of Thrones` series which is still continuing:\e[0m
+#/     ~$ ./tvdb.sh \e[33m-c\e[0m game of thrones
 
 usage() {
     # Display usage message
-    grep '^#/' "$0" | cut -c4-
+    echo -e "$(grep '^#/' "$0" | cut -c4-)"
     exit 0
 }
 
