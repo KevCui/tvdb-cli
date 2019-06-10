@@ -3,10 +3,11 @@
 # Fetch TV series infomation from tvdb
 #
 #/ Usage:
-#/   ./tvdb.sh [-c|-y <year_range>|-f|-r|-d <date>] <search_text>
+#/   ./tvdb.sh [-c|-s|-y <year_range>|-f|-r|-d <date>] <search_text>
 #/
 #/ Options:
 #/   -c               Filter series status equals to continuing
+#/   -s               Show series only, without episodes list
 #/   -y <year_range>  Filter series first aired in the range of years, like: 2000-2016
 #/   -f               Filter episodes aired in the future
 #/   -d <date>        Filter episodes aired after the date, format like: 1999-12-20
@@ -17,6 +18,9 @@
 #/ Examples:
 #/   \e[32m- Show `One-Punch Man` episodes list:\e[0m
 #/     ~$ ./tvdb.sh one punch man
+#/
+#/   \e[32m- Show `One-Punch Man` series infomation only:\e[0m
+#/     ~$ ./tvdb.sh \e[33m-s\e[0m one punch man
 #/
 #/   \e[32m- Show `One-Punch Man` episodes list with IMDb rating:\e[0m
 #/     ~$ ./tvdb.sh \e[33m-r\e[0m one punch man
@@ -46,8 +50,11 @@ usage() {
 set_var() {
     # Declare variables used in script
     expr "$*" : ".*--help" > /dev/null && usage
-    while getopts ":hcfrd:y:" opt; do
+    while getopts ":hcfrsd:y:" opt; do
         case $opt in
+            s)
+                _SHOW_SERIES_ONLY=false
+                ;;
             y)
                 _YEAR_RANGE_FIRSTAIRED="$OPTARG"
                 _MIN_YEAR_FIRSTAIRED=${_YEAR_RANGE_FIRSTAIRED%%-*}
@@ -333,7 +340,9 @@ search_tv_series() {
         if [[ "$togglePrint" == true ]]; then
             echo ""
             print_series_info "$id" "$_TMP_FILE_SERIES"
-            get_episodes "$id" && print_episodes_info "$_TMP_FILE_EPISODES"
+            if [[ -z "$_SHOW_SERIES_ONLY" ]]; then
+                get_episodes "$id" && print_episodes_info "$_TMP_FILE_EPISODES"
+            fi
         fi
     done
 }

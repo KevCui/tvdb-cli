@@ -13,10 +13,11 @@ A script to fetch your favorite TV show information from [TheTVDB](https://www.t
 
 ```
 Usage:
-  ./tvdb.sh [-c|-y <year_range>|-f|-r|-d <date>] <search_text>
+  ./tvdb.sh [-c|-s|-y <year_range>|-f|-r|-d <date>] <search_text>
 
 Options:
   -c               Filter series status equals to continuing
+  -s               Show series only, without episodes list
   -y <year_range>  Filter series first aired in the range of years, like: 2000-2016
   -f               Filter episodes aired in the future
   -d <date>        Filter episodes aired after the date, format like: 1999-12-20
@@ -77,6 +78,18 @@ Overview: Saitama is a superhero who has trained so hard that his hair has falle
 2019-06-19	S2E10	Episode 10
 2019-06-26	S2E11	Episode 11
 2019-07-03	S2E12	Episode 12
+```
+
+- Show `One-Punch Man` series information only, without episodes list:
+
+```
+~$ ./tvdb.sh -s one punch man
+
+-----
+One-Punch Man
+First Aired: 2015-10-04
+Status: Continuing
+Overview: Saitama is a superhero who has trained so hard that his hair has fallen out, and who can overcome any enemy with one punch. However, because he is so strong, he has become bored and frustrated that he wins all of his battles too easily.
 ```
 
 - Show `One-Punch Man` episodes list aired in the future (today 2019-06-10):
