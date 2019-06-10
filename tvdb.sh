@@ -5,7 +5,7 @@
 #/ Usage:
 #/   ./tvdb.sh <search_text>
 #/
-#/ Options:
+#/ Option:
 #/   --help:     Display this help message
 
 usage() {
@@ -183,8 +183,7 @@ search_tv_series() {
     # Show serach results
     for id in $(get_series_id);do
         true > $_TMP_FILE_EPISODES
-        echo ""
-        $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .seriesName, "First Aired: " + .firstAired, "Status: " + .status, "Overview: " + .overview' --arg id "$id" < "$_TMP_FILE_SERIES"
+        $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .seriesName, "First Aired: " + .firstAired, "Status: " + .status, "Overview: " + .overview, ""' --arg id "$id" < "$_TMP_FILE_SERIES"
         get_episodes "$id"
         $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0) | "\(.firstAired)\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' < "$_TMP_FILE_EPISODES"
     done
