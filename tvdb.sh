@@ -10,7 +10,7 @@
 #/   -f               Filter episodes aired in the future
 #/   -d <date>        Filter episodes aired after the date, format like: 1999-12-20
 #/                    -d option overrules -f
-#/   -h | --help:     Display this help message
+#/   -h | --help      Display this help message
 #/
 #/ Examples:
 #/   \e[32m- Show `One-Punch Man` episodes list:\e[0m
