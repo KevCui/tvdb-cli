@@ -7,7 +7,7 @@ A script to fetch your favorite TV show information from [tvdb](https://www.thet
 
 - [cURL](https://curl.haxx.se/)
 - [jq](https://stedolan.github.io/jq/)
-- tvdb API key: register tvdb to get own API key from [tvdb site]**(https://www.thetvdb.com/register)
+- tvdb API key: register to get API key from [tvdb site](https://www.thetvdb.com/register)
 
 ## How to use
 
