@@ -3,7 +3,7 @@
 # Fetch TV series infomation from tvdb
 #
 #/ Usage:
-#/   ./tvdb.sh [-c|-f|-d <date>] <search_text>
+#/   ./tvdb.sh [-c|-f|-r|-d <date>] <search_text>
 #/
 #/ Options:
 #/   -c               Filter series status equals to continuing
@@ -15,6 +15,9 @@
 #/ Examples:
 #/   \e[32m- Show `One-Punch Man` episodes list:\e[0m
 #/     ~$ ./tvdb.sh one punch man
+#/
+#/   \e[32m- Show `One-Punch Man` episodes list with IMDb rating:\e[0m
+#/     ~$ ./tvdb.sh \e[33m-r\e[0m one punch man
 #/
 #/   \e[32m- Show `One-Punch` Man episodes list aired in the future:\e[0m
 #/     ~$ ./tvdb.sh \e[33m-f\e[0m one punch man
@@ -34,8 +37,11 @@ usage() {
 set_var() {
     # Declare variables used in script
     expr "$*" : ".*--help" > /dev/null && usage
-    while getopts ":hcfd:" opt; do
+    while getopts ":hcfrd:" opt; do
         case $opt in
+            r)
+                _SHOW_RATING=true
+                ;;
             d)
                 _DATE_AIRED="$OPTARG"
                 ;;
@@ -58,6 +64,7 @@ set_var() {
 
     _SEARCH_TEXT=$( echo "$*" | sed -E 's/ /%20/g')
     _HOST="https://api.thetvdb.com"
+    _IMDB_URL="https://www.imdb.com/title"
     _TOKEN_FILE="./.token"
     _TMP_FILE_SERIES="./.tmp.series"
     _TMP_FILE_EPISODES="./.tmp.episodes"
@@ -82,8 +89,7 @@ set_api() {
 check_command() {
     # Check command if it exists
     if [[ ! "$2" ]]; then
-        echo "Command \"$1\" not found!"
-        exit 1
+        echo "Command \"$1\" not found!" && exit 1
     fi
 }
 
@@ -186,6 +192,33 @@ get_series_status() {
     $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .status' --arg id "$1" < "$2"
 }
 
+get_imdb_id_from_file() {
+    # Return imdb id from $1
+    $_JQ -r '.[] | select(.airedSeason!=0 and .firstAired>=$date) | .imdbId' --arg date "$(get_search_date)"< "$1"
+}
+
+get_imdb_rating() {
+    # Get IMDb rating and inject imdbRating field into $1
+    # $1: episodes data
+    local rating
+    sed -i 's/imdbId.*,/& "imdbRating": "n\/a",/' "$1"
+    for id in $(get_imdb_id_from_file "$1"); do
+        rating=$($_CURL -sS "$_IMDB_URL/$id/" | grep 'itemprop=\"ratingValue' | sed -E 's/.*ratingValue\">//;s/<\/span.*//')
+        if [[ "$rating" ]]; then
+            sed -i "s/imdbId\": \"$id\", \"imdbRating\": \"n\/a\"/imdbId\": \"$id\", \"imdbRating\": \"$rating\"/" "$1"
+        fi
+    done
+}
+
+get_search_date() {
+    # Return search date accordingly
+    local date
+    date="0000-00-00"
+    [[ "$_FUTURE_AIRED" == true ]] && date=$(date +"%Y-%m-%d")
+    [[ "$_DATE_AIRED" ]] && date="$_DATE_AIRED"
+    echo $date
+}
+
 fetch_token() {
     # Fetch token from tvdb API
     if [[ ! -f "$_TOKEN_FILE" ]]; then
@@ -234,16 +267,12 @@ print_series_info() {
 print_episodes_info() {
     # Print out series info
     # $1: episodes data
-    if [[ "$_FUTURE_AIRED" == true ]]; then
-        airedDate=$(date +"%Y-%m-%d")
+    if [[ "$_SHOW_RATING" ]]; then
+        get_imdb_rating "$_TMP_FILE_EPISODES"
+        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)\t[\(.imdbRating)]\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' --arg date "$(get_search_date)"< "$1"
     else
-        airedDate="0000-00-00"
+        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' --arg date "$(get_search_date)"< "$1"
     fi
-
-    if [[ "$_DATE_AIRED" ]]; then
-        airedDate="$_DATE_AIRED"
-    fi
-    $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' --arg date "$airedDate"< "$1"
 }
 
 search_tv_series() {

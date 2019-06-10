@@ -109,6 +109,24 @@ Overview: Saitama is a superhero who has trained so hard that his hair has falle
 2019-07-03      S2E12   Episode 12
 ```
 
+- Show `Chernobyl` episodes list with IMDb rating:
+
+```
+~$ ./tvdb.sh -r chernobyl
+-----
+Chernobyl
+First Aired:
+Status: Ended
+Overview: Chernobyl dramatizes the story of the 1986 nuclear accident — one of the worst man-made catastrophes in history — and the sacrifices made to save Europe from unimaginable disaster.
+
+2019-05-06      [9.6]   S1E1    1:23:45
+2019-05-13      [9.7]   S1E2    Please Remain Calm
+2019-05-20      [9.7]   S1E3    Open Wide, O Earth
+2019-05-27      [9.6]   S1E4    The Happiness of All Mankind
+2019-06-03      [9.9]   S1E5    Vichnaya Pamyat
+...
+```
+
 - Show `Game of Thrones` series which is continuing:
 
 ```
