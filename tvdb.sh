@@ -248,6 +248,7 @@ search_tv_series() {
         fi
 
         if [[ "$togglePrint" == true ]]; then
+            echo ""
             print_series_info "$id" "$_TMP_FILE_SERIES"
             get_episodes "$id" && print_episodes_info "$_TMP_FILE_EPISODES"
         fi

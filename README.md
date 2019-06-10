@@ -45,6 +45,7 @@ Add them to `.zshrc` file if you want to run script in other terms.
 
 ```
 ~$ ./tvdb.sh one punch man
+
 -----
 One-Punch Man
 First Aired: 2015-10-04
@@ -80,6 +81,7 @@ Overview: Saitama is a superhero who has trained so hard that his hair has falle
 
 ```
 ~$ ./tvdb.sh -f one punch man
+
 -----
 One-Punch Man
 First Aired: 2015-10-04
@@ -96,6 +98,7 @@ Overview: Saitama is a superhero who has trained so hard that his hair has falle
 
 ```
 ~$ ./tvdb.sh -d 2019-06-20 one punch man
+
 -----
 One-Punch Man
 First Aired: 2015-10-04
