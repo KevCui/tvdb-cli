@@ -259,7 +259,7 @@ get_search_date() {
     date="0000-00-00"
     [[ "$_FUTURE_AIRED" == true ]] && date=$(date +"%Y-%m-%d")
     [[ "$_DATE_AIRED" ]] && date="$_DATE_AIRED"
-    echo $date
+    echo "$date"
 }
 
 fetch_token() {
@@ -272,6 +272,9 @@ fetch_token() {
         _TOKEN=$(cat "$_TOKEN_FILE")
         if [[ "$time_yesterday" -ge "$time_file_modified" ]]; then
             _TOKEN=$(refresh_token)
+            if [[ "$_TOKEN" == "" ]]; then
+                _TOKEN=$(login)
+            fi
         fi
     fi
 }
