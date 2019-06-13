@@ -103,10 +103,10 @@ First Aired: 2015-10-04
 Status: Continuing
 Overview: Saitama is a superhero who has trained so hard that his hair has fallen out, and who can overcome any enemy with one punch. However, because he is so strong, he has become bored and frustrated that he wins all of his battles too easily.
 
-2019-06-12      S2E9    The Ultimate Dilemma
-2019-06-19      S2E10   Episode 10
-2019-06-26      S2E11   Episode 11
-2019-07-03      S2E12   Episode 12
+2019-06-12  S2E9   The Ultimate Dilemma
+2019-06-19  S2E10  Episode 10
+2019-06-26  S2E11  Episode 11
+2019-07-03  S2E12  Episode 12
 ```
 
 - Show `One-Punch Man` episodes list aired after `2019-06-20`:
@@ -120,8 +120,8 @@ First Aired: 2015-10-04
 Status: Continuing
 Overview: Saitama is a superhero who has trained so hard that his hair has fallen out, and who can overcome any enemy with one punch. However, because he is so strong, he has become bored and frustrated that he wins all of his battles too easily.
 
-2019-06-26      S2E11   Episode 11
-2019-07-03      S2E12   Episode 12
+2019-06-26  S2E11 Episode 11
+2019-07-03  S2E12 Episode 12
 ```
 
 - Show `Chernobyl` episodes list with IMDb rating:
@@ -134,11 +134,11 @@ First Aired:
 Status: Ended
 Overview: Chernobyl dramatizes the story of the 1986 nuclear accident — one of the worst man-made catastrophes in history — and the sacrifices made to save Europe from unimaginable disaster.
 
-2019-05-06      [9.6]   S1E1    1:23:45
-2019-05-13      [9.7]   S1E2    Please Remain Calm
-2019-05-20      [9.7]   S1E3    Open Wide, O Earth
-2019-05-27      [9.6]   S1E4    The Happiness of All Mankind
-2019-06-03      [9.9]   S1E5    Vichnaya Pamyat
+2019-05-06  S1E1  1:23:45                       9.6
+2019-05-13  S1E2  Please Remain Calm            9.7
+2019-05-20  S1E3  Open Wide, O Earth            9.7
+2019-05-27  S1E4  The Happiness of All Mankind  9.6
+2019-06-03  S1E5  Vichnaya Pamyat               9.9
 ...
 ```
 

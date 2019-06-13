@@ -244,11 +244,11 @@ get_imdb_rating() {
     # Get IMDb rating and inject imdbRating field into $1
     # $1: episodes data
     local rating
-    sed -i 's/imdbId.*,/& "imdbRating": "n\/a",/' "$1"
+    sed -i 's/imdbId.*,/& "imdbRating": "",/' "$1"
     for id in $(get_imdb_id_from_file "$1"); do
         rating=$($_CURL -sS "$_IMDB_URL/$id/" | grep 'itemprop=\"ratingValue' | sed -E 's/.*ratingValue\">//;s/<\/span.*//')
         if [[ "$rating" ]]; then
-            sed -i "s/imdbId\": \"$id\", \"imdbRating\": \"n\/a\"/imdbId\": \"$id\", \"imdbRating\": \"$rating\"/" "$1"
+            sed -i "s/imdbId\": \"$id\", \"imdbRating\": \"\"/imdbId\": \"$id\", \"imdbRating\": \"$rating\"/" "$1"
         fi
     done
 }
@@ -315,9 +315,9 @@ print_episodes_info() {
     # $1: episodes data
     if [[ "$_SHOW_RATING" ]]; then
         get_imdb_rating "$_TMP_FILE_EPISODES"
-        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)\t[\(.imdbRating)]\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' --arg date "$(get_search_date)"< "$1"
+        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\(.episodeName)+\(.imdbRating)"' --arg date "$(get_search_date)"< "$1" | column -t -s "+"
     else
-        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)\tS\(.airedSeason)E\(.airedEpisodeNumber)\t\(.episodeName)"' --arg date "$(get_search_date)"< "$1"
+        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\(.episodeName)"' --arg date "$(get_search_date)"< "$1" | column -t -s"+"
     fi
 }
 
