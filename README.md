@@ -158,3 +158,9 @@ Or
 ~$ ./tvdb.sh -c game of thrones
 ```
 No results? That's right!
+
+## Run tests
+
+```
+~$ bats test/tvdb.bats
+```
