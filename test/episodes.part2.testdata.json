@@ -1,0 +1,94 @@
+{
+  "links": {
+    "first": 1,
+    "last": 1,
+    "next": null,
+    "prev": null
+  },
+  "data": [
+    {
+      "id": 7116987,
+      "airedSeason": 1,
+      "airedSeasonID": 801960,
+      "airedEpisodeNumber": 5,
+      "episodeName": "Vichnaya Pamyat",
+      "firstAired": "2019-06-03",
+      "guestStars": [],
+      "director": "|Johan Renck|",
+      "directors": [
+        "Johan Renck"
+      ],
+      "writers": [
+        "Craig Mazin"
+      ],
+      "overview": "Valery Legasov, Boris Shcherbina and Ulana Khomyuk risk their lives and reputations to expose the truth about Chernobyl.",
+      "language": {
+        "episodeName": "en",
+        "overview": "en"
+      },
+      "productionCode": "",
+      "showUrl": "",
+      "lastUpdated": 1559757705,
+      "dvdDiscid": "",
+      "dvdSeason": 0,
+      "dvdEpisodeNumber": 0,
+      "dvdChapter": null,
+      "absoluteNumber": 5,
+      "filename": "episodes/360893/7116987.jpg",
+      "seriesId": 360893,
+      "lastUpdatedBy": 529371,
+      "airsAfterSeason": null,
+      "airsBeforeSeason": null,
+      "airsBeforeEpisode": null,
+      "thumbAuthor": 504387,
+      "thumbAdded": "2019-05-21 15:18:07",
+      "thumbWidth": "400",
+      "thumbHeight": "225",
+      "imdbId": "tt9166696",
+      "siteRating": 9.8,
+      "siteRatingCount": 4
+    },
+    {
+      "id": 7223774,
+      "airedSeason": 1,
+      "airedSeasonID": 801960,
+      "airedEpisodeNumber": 3,
+      "episodeName": "Open Wide, O Earth ",
+      "firstAired": "2019-05-20",
+      "guestStars": [],
+      "director": "|Johan Renck|",
+      "directors": [
+        "Johan Renck"
+      ],
+      "writers": [
+        "Craig Mazin"
+      ],
+      "overview": "Lyudmilla Ignatenko, a Pripyat resident, ignores warning about her firefighter husband's contamination; Valery Legasov lays out a decontamination plan, complete with human risks.",
+      "language": {
+        "episodeName": "en",
+        "overview": "en"
+      },
+      "productionCode": "",
+      "showUrl": "",
+      "lastUpdated": 1560085979,
+      "dvdDiscid": "",
+      "dvdSeason": 0,
+      "dvdEpisodeNumber": 0,
+      "dvdChapter": null,
+      "absoluteNumber": 3,
+      "filename": "episodes/360893/7223774.jpg",
+      "seriesId": 360893,
+      "lastUpdatedBy": 262621,
+      "airsAfterSeason": null,
+      "airsBeforeSeason": null,
+      "airsBeforeEpisode": null,
+      "thumbAuthor": 529371,
+      "thumbAdded": "2019-06-05 09:47:52",
+      "thumbWidth": "400",
+      "thumbHeight": "225",
+      "imdbId": "tt9166672",
+      "siteRating": 7,
+      "siteRatingCount": 1
+    }
+  ]
+}

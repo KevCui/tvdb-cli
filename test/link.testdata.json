@@ -1,0 +1,9 @@
+{
+  "links": {
+    "first": 1,
+    "last": 999,
+    "next": 2,
+    "prev": null
+  },
+  "data": []
+}

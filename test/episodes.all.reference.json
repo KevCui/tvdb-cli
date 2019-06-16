@@ -1,0 +1,216 @@
+[
+  {
+    "id": 7082952,
+    "airedSeason": 1,
+    "airedSeasonID": 801960,
+    "airedEpisodeNumber": 1,
+    "episodeName": "1:23:45",
+    "firstAired": "2019-05-06",
+    "guestStars": [
+      "Ross Armstrong",
+      "Philip Barantini",
+      "Jessie Buckley"
+    ],
+    "director": "|Johan Renck|",
+    "directors": [
+      "Johan Renck"
+    ],
+    "writers": [
+      "Craig Mazin"
+    ],
+    "overview": "Plant workers and firefighters put their lives on the line to control a catastrophic 1986 explosion at a Soviet nuclear power plant.",
+    "language": {
+      "episodeName": "en",
+      "overview": "en"
+    },
+    "productionCode": "",
+    "showUrl": "",
+    "lastUpdated": 1559668978,
+    "dvdDiscid": "",
+    "dvdSeason": 0,
+    "dvdEpisodeNumber": 0,
+    "dvdChapter": null,
+    "absoluteNumber": 1,
+    "filename": "episodes/360893/7082952.jpg",
+    "seriesId": 360893,
+    "lastUpdatedBy": 453911,
+    "airsAfterSeason": null,
+    "airsBeforeSeason": null,
+    "airsBeforeEpisode": null,
+    "thumbAuthor": 504387,
+    "thumbAdded": "2019-04-23 12:33:06",
+    "thumbWidth": "400",
+    "thumbHeight": "225",
+    "imdbId": "tt8162428",
+    "siteRating": 9,
+    "siteRatingCount": 4
+  },
+  {
+    "id": 7109113,
+    "airedSeason": 1,
+    "airedSeasonID": 801960,
+    "airedEpisodeNumber": 2,
+    "episodeName": "Please Remain Calm",
+    "firstAired": "2019-05-13",
+    "guestStars": [],
+    "director": "|Johan Renck|",
+    "directors": [
+      "Johan Renck"
+    ],
+    "writers": [
+      "Craig Mazin"
+    ],
+    "overview": "With untold millions at risk after the Chernobyl explosion, nuclear physicist Ulana Khomyuk makes a desperate attempt to reach Valery Legasov, a leading Soviet nuclear physicist, and warn him about the threat of second explosion that could devastate the continent.",
+    "language": {
+      "episodeName": "en",
+      "overview": "en"
+    },
+    "productionCode": "",
+    "showUrl": "",
+    "lastUpdated": 1559808050,
+    "dvdDiscid": "",
+    "dvdSeason": 0,
+    "dvdEpisodeNumber": 0,
+    "dvdChapter": null,
+    "absoluteNumber": 2,
+    "filename": "episodes/360893/7109113.jpg",
+    "seriesId": 360893,
+    "lastUpdatedBy": 470311,
+    "airsAfterSeason": null,
+    "airsBeforeSeason": null,
+    "airsBeforeEpisode": null,
+    "thumbAuthor": 504387,
+    "thumbAdded": "2019-05-01 05:20:23",
+    "thumbWidth": "400",
+    "thumbHeight": "225",
+    "imdbId": "tt8482972",
+    "siteRating": 9,
+    "siteRatingCount": 4
+  },
+  {
+    "id": 7116984,
+    "airedSeason": 1,
+    "airedSeasonID": 801960,
+    "airedEpisodeNumber": 4,
+    "episodeName": "The Happiness of All Mankind",
+    "firstAired": "2019-05-27",
+    "guestStars": [],
+    "director": "|Johan Renck|",
+    "directors": [
+      "Johan Renck"
+    ],
+    "writers": [
+      "Craig Mazin"
+    ],
+    "overview": "Valery Legasov and Soviet Deputy Prime Minister Boris Shcherbina consider using lunar rovers to remove radioactive debris. Ulana Khomyuk faces government hurdles in determining the truth about the cause of the explosion.",
+    "language": {
+      "episodeName": "en",
+      "overview": "en"
+    },
+    "productionCode": "",
+    "showUrl": "",
+    "lastUpdated": 1560061511,
+    "dvdDiscid": "",
+    "dvdSeason": 0,
+    "dvdEpisodeNumber": 0,
+    "dvdChapter": null,
+    "absoluteNumber": 4,
+    "filename": "episodes/360893/7116984.jpg",
+    "seriesId": 360893,
+    "lastUpdatedBy": 514065,
+    "airsAfterSeason": null,
+    "airsBeforeSeason": null,
+    "airsBeforeEpisode": null,
+    "thumbAuthor": 504387,
+    "thumbAdded": "2019-05-14 01:38:27",
+    "thumbWidth": "400",
+    "thumbHeight": "225",
+    "imdbId": "tt9166678",
+    "siteRating": 8.8,
+    "siteRatingCount": 4
+  },
+  {
+    "id": 7116987,
+    "airedSeason": 1,
+    "airedSeasonID": 801960,
+    "airedEpisodeNumber": 5,
+    "episodeName": "Vichnaya Pamyat",
+    "firstAired": "2019-06-03",
+    "guestStars": [],
+    "director": "|Johan Renck|",
+    "directors": [
+      "Johan Renck"
+    ],
+    "writers": [
+      "Craig Mazin"
+    ],
+    "overview": "Valery Legasov, Boris Shcherbina and Ulana Khomyuk risk their lives and reputations to expose the truth about Chernobyl.",
+    "language": {
+      "episodeName": "en",
+      "overview": "en"
+    },
+    "productionCode": "",
+    "showUrl": "",
+    "lastUpdated": 1559757705,
+    "dvdDiscid": "",
+    "dvdSeason": 0,
+    "dvdEpisodeNumber": 0,
+    "dvdChapter": null,
+    "absoluteNumber": 5,
+    "filename": "episodes/360893/7116987.jpg",
+    "seriesId": 360893,
+    "lastUpdatedBy": 529371,
+    "airsAfterSeason": null,
+    "airsBeforeSeason": null,
+    "airsBeforeEpisode": null,
+    "thumbAuthor": 504387,
+    "thumbAdded": "2019-05-21 15:18:07",
+    "thumbWidth": "400",
+    "thumbHeight": "225",
+    "imdbId": "tt9166696",
+    "siteRating": 9.8,
+    "siteRatingCount": 4
+  },
+  {
+    "id": 7223774,
+    "airedSeason": 1,
+    "airedSeasonID": 801960,
+    "airedEpisodeNumber": 3,
+    "episodeName": "Open Wide, O Earth ",
+    "firstAired": "2019-05-20",
+    "guestStars": [],
+    "director": "|Johan Renck|",
+    "directors": [
+      "Johan Renck"
+    ],
+    "writers": [
+      "Craig Mazin"
+    ],
+    "overview": "Lyudmilla Ignatenko, a Pripyat resident, ignores warning about her firefighter husband's contamination; Valery Legasov lays out a decontamination plan, complete with human risks.",
+    "language": {
+      "episodeName": "en",
+      "overview": "en"
+    },
+    "productionCode": "",
+    "showUrl": "",
+    "lastUpdated": 1560085979,
+    "dvdDiscid": "",
+    "dvdSeason": 0,
+    "dvdEpisodeNumber": 0,
+    "dvdChapter": null,
+    "absoluteNumber": 3,
+    "filename": "episodes/360893/7223774.jpg",
+    "seriesId": 360893,
+    "lastUpdatedBy": 262621,
+    "airsAfterSeason": null,
+    "airsBeforeSeason": null,
+    "airsBeforeEpisode": null,
+    "thumbAuthor": 529371,
+    "thumbAdded": "2019-06-05 09:47:52",
+    "thumbWidth": "400",
+    "thumbHeight": "225",
+    "imdbId": "tt9166672",
+    "siteRating": 7,
+    "siteRatingCount": 1
+  }
+]
