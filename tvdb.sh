@@ -59,7 +59,7 @@ set_var() {
                 _YEAR_RANGE_FIRSTAIRED="$OPTARG"
                 _MIN_YEAR_FIRSTAIRED=${_YEAR_RANGE_FIRSTAIRED%%-*}
                 _MAX_YEAR_FIRSTAIRED=${_YEAR_RANGE_FIRSTAIRED#*-}
-                check_fistaired_year_range
+                check_firstaired_year_range "$_MIN_YEAR_FIRSTAIRED" "$_MAX_YEAR_FIRSTAIRED"
                 ;;
             r)
                 _SHOW_RATING=true
@@ -115,11 +115,12 @@ check_command() {
     fi
 }
 
-check_fistaired_year_range() {
+check_firstaired_year_range() {
     # Check if year range is valid
-    if [[ "$_MIN_YEAR_FIRSTAIRED" -gt "$_MAX_YEAR_FIRSTAIRED" ]]; then
-        echo "Invalid year range: -y <year_range>!"
-        usage && exit 1
+    # $1: min. year
+    # $2: max. year
+    if [[ "$1" -gt "$2" ]]; then
+        echo "Invalid year range: -y <year_range>!" && usage
     fi
 }
 
@@ -127,22 +128,22 @@ check_var() {
     # Check _SEARCH_TEXT, TVDB_API_KEY, TVDB_USER_KEY and TVDB_USER_NAME
     if [[ -z "$_SEARCH_TEXT" ]]; then
         echo 'No search text!'
-        usage && exit 1
+        usage
     fi
     if [[ -z "$TVDB_API_KEY" ]]; then
         echo 'API key is not set!'
         echo '  ~$ export TVDB_API_KEY="<apikey>"'
-        usage && exit 1
+        usage
     fi
     if [[ -z "$TVDB_USER_KEY" ]]; then
         echo 'User key is not set!'
         echo '  ~$ export TVDB_USER_KEY="<userkey>"'
-        usage && exit 1
+        usage
     fi
     if [[ -z "$TVDB_USER_NAME" ]]; then
         echo 'User name is not set!'
         echo '  ~$ export TVDB_USER_NAME="<username>"'
-        usage && exit 1
+        usage
     fi
 }
 
@@ -218,14 +219,14 @@ get_episodes() {
 get_series_status() {
     # Return series status from $2 data: Ended, Continuing...
     # $1: series id
-    # $2: siries data
+    # $2: data file
     $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .status' --arg id "$1" < "$2"
 }
 
-get_series_first_aired_year() {
+get_series_firstaired_year() {
     # Return year of a series first aired
     # $1: series id
-    # $2: siries data
+    # $2: data file
     local date
     date=$($_JQ -r '.data | .[] | select(.id==($id | tonumber)) | .firstAired' --arg id "$1" < "$2")
     if [[ -z "$date" ]]; then
@@ -306,13 +307,13 @@ refresh_token() {
 print_series_info() {
     # Print out series info
     # $1: series id
-    # $2: series data
+    # $2: data file
     $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | "-----", .seriesName, "First Aired: " + .firstAired, "Status: " + .status, "Overview: " + .overview, ""' --arg id "$1" < "$2"
 }
 
 print_episodes_info() {
     # Print out series info
-    # $1: episodes data
+    # $1: episodes file
     if [[ "$_SHOW_RATING" ]]; then
         get_imdb_rating "$_TMP_FILE_EPISODES"
         $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\(.episodeName)+\(.imdbRating)"' --arg date "$(get_search_date)"< "$1" | column -t -s "+"
@@ -328,7 +329,7 @@ search_tv_series() {
         togglePrint=true
 
         if [[ "$_YEAR_RANGE_FIRSTAIRED" ]]; then
-            year=$(get_series_first_aired_year "$id" "$_TMP_FILE_SERIES")
+            year=$(get_series_firstaired_year "$id" "$_TMP_FILE_SERIES")
             if [[  "$year" -lt "$_MIN_YEAR_FIRSTAIRED" || "$year" -gt "$_MAX_YEAR_FIRSTAIRED" ]]; then
                 togglePrint=false
             fi
