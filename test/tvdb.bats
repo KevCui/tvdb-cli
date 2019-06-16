@@ -269,7 +269,19 @@ teardown() {
     [ "$output" = "$data" ]
 }
 
-@test "CHECK: print_episodes_info()" {
+@test "CHECK: print_series_info(): with rating" {
+    get_imdb_rating() {
+        echo "" > /dev/null
+    }
+    _DATE_AIRED="2019-05-05"
+    _SHOW_RATING=true
+    data=$(cat "$_TEST_DIR/episodes.rating.reference.text")
+    run print_episodes_info "$_TEST_DIR/episodes.rating.testdata.json"
+    [ "$status" -eq 0 ]
+    [ "$output" = "$data" ]
+}
+
+@test "CHECK: print_episodes_info(): without rating" {
     _DATE_AIRED="2019-05-13"
     data=$(cat "$_TEST_DIR/episodes.info.reference.text")
     run print_episodes_info "$_TEST_DIR/episodes.merge.reference.json"
