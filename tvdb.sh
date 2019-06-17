@@ -43,8 +43,7 @@
 
 usage() {
     # Display usage message
-    echo -e "$(grep '^#/' "$0" | cut -c4-)"
-    exit 0
+    printf "%b\n" "$(grep '^#/' "$0" | cut -c4-)" && exit 0
 }
 
 set_var() {
