@@ -13,9 +13,9 @@ clean_up_files() {
 setup() {
     _SCRIPT="tvdb.sh"
     _SEARCH_TEXT="toto"
-    _TVDB_API_KEY="key"
-    _TVDB_USER="tata"
-    _TVDB_USER_NAME="jack"
+    TVDB_API_KEY="key"
+    TVDB_USER_KEY="tata"
+    TVDB_USER_NAME="jack"
 
     _JQ=$(command -v jq)
     _CURL=$(command -v curl)
@@ -269,7 +269,7 @@ teardown() {
     [ "$output" = "$data" ]
 }
 
-@test "CHECK: print_series_info(): with rating" {
+@test "CHECK: print_episodes_info(): with rating" {
     get_imdb_rating() {
         echo "" > /dev/null
     }
