@@ -11,7 +11,7 @@ clean_up_files() {
 }
 
 setup() {
-    _SCRIPT="tvdb.sh"
+    _SCRIPT="./tvdb.sh"
     _SEARCH_TEXT="toto"
     TVDB_API_KEY="key"
     TVDB_USER_KEY="tata"
@@ -50,7 +50,6 @@ teardown() {
 @test "CHECK: check_command(): command found" {
     run check_command "bats" $(command -v bats)
     [ "$status" -eq 0 ]
-    echo "$output" >&2
     [ "$output" = "" ]
 }
 
