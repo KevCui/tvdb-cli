@@ -312,8 +312,7 @@ print_series_info() {
     # Print out series info
     # $1: series id
     # $2: data file
-    printf "%b\n" "$($_JQ -r '.data | .[] | select(.id==($id | tonumber)) | "\\033[1m\\e[33m" + .seriesName + "\\e[0m", "\\033[1mFirst Aired:\\033[0m+" + .firstAired, "\\033[1mStatus:\\033[0m+" + .status, "\\033[1mOverview:\\033[0m+" + .overview, ""' --arg id "$1" < "$2" | column -t -s"+")"
-    echo ""
+    printf "%b\n" "$($_JQ -r '.data | .[] | select(.id==($id | tonumber)) | "\\033[1m\\e[33m" + .seriesName + "\\e[0m", "\\033[1mFirst Aired:\\033[0m+" + .firstAired, "\\033[1mStatus:\\033[0m+" + .status, "\\033[1mOverview:\\033[0m+" + .overview, "+"' --arg id "$1" < "$2" | column -t -s"+")"
 }
 
 print_episodes_info() {
