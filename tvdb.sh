@@ -312,7 +312,8 @@ print_series_info() {
     # Print out series info
     # $1: series id
     # $2: data file
-    $_JQ -r '.data | .[] | select(.id==($id | tonumber)) | "-----", .seriesName, "First Aired: " + .firstAired, "Status: " + .status, "Overview: " + .overview, ""' --arg id "$1" < "$2"
+    printf "%b\n" "$($_JQ -r '.data | .[] | select(.id==($id | tonumber)) | "\\033[1m\\e[33m" + .seriesName + "\\e[0m", "\\033[1mFirst Aired:\\033[0m+" + .firstAired, "\\033[1mStatus:\\033[0m+" + .status, "\\033[1mOverview:\\033[0m+" + .overview, ""' --arg id "$1" < "$2" | column -t -s"+")"
+    echo ""
 }
 
 print_episodes_info() {
@@ -320,9 +321,9 @@ print_episodes_info() {
     # $1: episodes file
     if [[ "${_SHOW_RATING:-}" ]]; then
         get_imdb_rating "$_TMP_FILE_EPISODES"
-        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\(.episodeName)+\(.imdbRating)"' --arg date "$(get_search_date)"< "$1" | column -t -s "+"
+        printf "%b\n" "$($_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\\e[32m\(.episodeName)\\e[0m+\\e[33m\(.imdbRating)\\e[0m"' --arg date "$(get_search_date)"< "$1" | column -t -s "+")"
     else
-        $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\(.episodeName)"' --arg date "$(get_search_date)"< "$1" | column -t -s"+"
+        printf "%b\n" "$($_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\\e[32m\(.episodeName)\\e[0m"' --arg date "$(get_search_date)"< "$1" | column -t -s"+")"
     fi
 }
 
