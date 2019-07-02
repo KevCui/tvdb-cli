@@ -4,6 +4,8 @@
 #   ~$ bats test/tvdb.bats
 #
 
+BATS_TEST_SKIPPED=
+
 clean_up_files() {
     rm -rf "$_TOKEN_FILE"
     rm -rf "$_TMP_FILE_SERIES"
@@ -34,17 +36,15 @@ teardown() {
 }
 
 @test "CHECK: set_var(): --help" {
-    usage=$(run usage)
     run set_var --help
     [ "$status" -eq 0 ]
-    [ "$output" = "$usage" ]
+    [ "$output" = "$(usage)" ]
 }
 
 @test "CHECK: set_var(): -h" {
-    usage=$(run usage)
     run set_var -h
     [ "$status" -eq 0 ]
-    [ "$output" = "$usage" ]
+    [ "$output" = "$(usage)" ]
 }
 
 @test "CHECK: check_command(): command found" {
@@ -65,28 +65,28 @@ teardown() {
     [ "$output" = "" ]
 }
 
-@test "CHECK: check_var(): no _SEARCH_TEXT" {
+@test "CHECK: check_var(): no \$_SEARCH_TEXT" {
     unset _SEARCH_TEXT
     run check_var
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "No search text!" ]
 }
 
-@test "CHECK: check_var(): no TVDB_API_KEY" {
+@test "CHECK: check_var(): no \$TVDB_API_KEY" {
     unset TVDB_API_KEY
     run check_var
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "API key is not set!" ]
 }
 
-@test "CHECK: check_var(): no TVDB_USER_KEY" {
+@test "CHECK: check_var(): no \$TVDB_USER_KEY" {
     unset TVDB_USER_KEY
     run check_var
     [ "$status" -eq 0 ]
     [ "${lines[0]}" = "User key is not set!" ]
 }
 
-@test "CHECK: check_var(): no TVDB_USER_NAME" {
+@test "CHECK: check_var(): no \$TVDB_USER_NAME" {
     unset TVDB_USER_NAME
     run check_var
     [ "$status" -eq 0 ]
@@ -98,7 +98,6 @@ teardown() {
     max="2019"
     run check_firstaired_year_range "$min" "$max"
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "" ]
 }
 
 @test "CHECK: check_firstaired_year_range(): min == max" {
@@ -106,7 +105,6 @@ teardown() {
     max="2019"
     run check_firstaired_year_range "$min" "$max"
     [ "$status" -eq 0 ]
-    [ "${lines[0]}" = "" ]
 }
 
 @test "CHECK: check_firstaired_year_range(): min > max" {

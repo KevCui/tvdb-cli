@@ -41,6 +41,9 @@
 #/   \e[32m- Show `Game of Thrones` series which is still continuing:\e[0m
 #/     ~$ ./tvdb.sh \e[33m-c\e[0m game of thrones
 
+set -e
+set -u
+
 usage() {
     # Display usage message
     printf "%b\n" "$(grep '^#/' "$0" | cut -c4-)" && exit 0
@@ -109,7 +112,9 @@ set_api() {
 
 check_command() {
     # Check command if it exists
-    if [[ ! "$2" ]]; then
+    # $1: name
+    # $2: command
+    if [[ -z "${2:-}" ]]; then
         echo "Command \"$1\" not found!" && exit 1
     fi
 }
@@ -125,21 +130,21 @@ check_firstaired_year_range() {
 
 check_var() {
     # Check _SEARCH_TEXT, TVDB_API_KEY, TVDB_USER_KEY and TVDB_USER_NAME
-    if [[ -z "$_SEARCH_TEXT" ]]; then
+    if [[ -z "${_SEARCH_TEXT:-}" ]]; then
         echo 'No search text!'
         usage
     fi
-    if [[ -z "$TVDB_API_KEY" ]]; then
+    if [[ -z "${TVDB_API_KEY:-}" ]]; then
         echo 'API key is not set!'
         echo '  ~$ export TVDB_API_KEY="<apikey>"'
         usage
     fi
-    if [[ -z "$TVDB_USER_KEY" ]]; then
+    if [[ -z "${TVDB_USER_KEY:-}" ]]; then
         echo 'User key is not set!'
         echo '  ~$ export TVDB_USER_KEY="<userkey>"'
         usage
     fi
-    if [[ -z "$TVDB_USER_NAME" ]]; then
+    if [[ -z "${TVDB_USER_NAME:-}" ]]; then
         echo 'User name is not set!'
         echo '  ~$ export TVDB_USER_NAME="<username>"'
         usage
@@ -257,8 +262,8 @@ get_search_date() {
     # Return search date accordingly
     local date
     date="0000-00-00"
-    [[ "$_FUTURE_AIRED" == true ]] && date=$(date +"%Y-%m-%d")
-    [[ "$_DATE_AIRED" ]] && date="$_DATE_AIRED"
+    [[ "${_FUTURE_AIRED:-}" == true ]] && date=$(date +"%Y-%m-%d")
+    [[ "${_DATE_AIRED:-}" ]] && date="$_DATE_AIRED"
     echo "$date"
 }
 
@@ -271,7 +276,7 @@ fetch_token() {
         time_file_modified=$(date +%s -r "$_TOKEN_FILE")
         _TOKEN=$(cat "$_TOKEN_FILE")
         if [[ "$time_yesterday" -ge "$time_file_modified" ]]; then
-            _TOKEN=$(refresh_token)
+            _TOKEN=$(refresh_token) || true
             if [[ "$_TOKEN" == "" ]]; then
                 _TOKEN=$(login)
             fi
@@ -313,7 +318,7 @@ print_series_info() {
 print_episodes_info() {
     # Print out series info
     # $1: episodes file
-    if [[ "$_SHOW_RATING" ]]; then
+    if [[ "${_SHOW_RATING:-}" ]]; then
         get_imdb_rating "$_TMP_FILE_EPISODES"
         $_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\(.episodeName)+\(.imdbRating)"' --arg date "$(get_search_date)"< "$1" | column -t -s "+"
     else
@@ -327,14 +332,14 @@ search_tv_series() {
         true > $_TMP_FILE_EPISODES
         togglePrint=true
 
-        if [[ "$_YEAR_RANGE_FIRSTAIRED" ]]; then
+        if [[ "${_YEAR_RANGE_FIRSTAIRED:-}" ]]; then
             year=$(get_series_firstaired_year "$id" "$_TMP_FILE_SERIES")
             if [[  "$year" -lt "$_MIN_YEAR_FIRSTAIRED" || "$year" -gt "$_MAX_YEAR_FIRSTAIRED" ]]; then
                 togglePrint=false
             fi
         fi
 
-        if [[ "$_CONTINUING_AIRED" == true ]]; then
+        if [[ "${_CONTINUING_AIRED:-}" == true ]]; then
             if [[ $(get_series_status "$id" "$_TMP_FILE_SERIES") != "Continuing" ]]; then
                 togglePrint=false
             fi
@@ -343,7 +348,7 @@ search_tv_series() {
         if [[ "$togglePrint" == true ]]; then
             echo ""
             print_series_info "$id" "$_TMP_FILE_SERIES"
-            if [[ -z "$_SHOW_SERIES_ONLY" ]]; then
+            if [[ -z "${_SHOW_SERIES_ONLY:-}" ]]; then
                 get_episodes "$id" && print_episodes_info "$_TMP_FILE_EPISODES"
             fi
         fi
