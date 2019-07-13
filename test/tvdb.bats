@@ -35,18 +35,6 @@ teardown() {
     clean_up_files
 }
 
-@test "CHECK: set_var(): --help" {
-    run set_var --help
-    [ "$status" -eq 0 ]
-    [ "$output" = "$(usage)" ]
-}
-
-@test "CHECK: set_var(): -h" {
-    run set_var -h
-    [ "$status" -eq 0 ]
-    [ "$output" = "$(usage)" ]
-}
-
 @test "CHECK: command_not_found()" {
     run command_not_found "bats"
     [ "$status" -eq 1 ]
