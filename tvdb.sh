@@ -93,10 +93,8 @@ set_var() {
     _TMP_FILE_SERIES="./.tmp.series"
     _TMP_FILE_EPISODES="./.tmp.episodes"
     _TOKEN=""
-    _CURL=$(command -v curl)
-    _JQ=$(command -v jq)
-    check_command "curl" "$_CURL"
-    check_command "jq" "$_JQ"
+    _CURL=$(command -v curl) || command_not_found "curl"
+    _JQ=$(command -v jq) || command_not_found "jq"
 
     true > $_TMP_FILE_SERIES
     true > $_TMP_FILE_EPISODES
@@ -110,13 +108,10 @@ set_api() {
     _API_SERIES_EPISODES="$_HOST/series/{id}/episodes"
 }
 
-check_command() {
-    # Check command if it exists
-    # $1: name
-    # $2: command
-    if [[ -z "${2:-}" ]]; then
-        echo "Command \"$1\" not found!" && exit 1
-    fi
+command_not_found() {
+    # Show command not found message
+    # $1: command name
+    printf "%b\n" '\033[31m'"$1"'\033[0m command not found!' && exit 1
 }
 
 check_firstaired_year_range() {
