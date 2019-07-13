@@ -47,7 +47,7 @@ teardown() {
     [ "$output" = "$(usage)" ]
 }
 
-@test "CHECK: command_not_found():" {
+@test "CHECK: command_not_found()" {
     run command_not_found "bats"
     [ "$status" -eq 1 ]
     [ "$output" = "[31mbats[0m command not found!" ]
