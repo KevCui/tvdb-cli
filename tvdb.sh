@@ -89,9 +89,9 @@ set_var() {
     _SEARCH_TEXT=$( echo "$*" | sed -E 's/ /%20/g')
     _HOST="https://api.thetvdb.com"
     _IMDB_URL="https://www.imdb.com/title"
-    _TOKEN_FILE="./.token"
-    _TMP_FILE_SERIES="./.tmp.series"
-    _TMP_FILE_EPISODES="./.tmp.episodes"
+    _TOKEN_FILE="/tmp/.tvdb.token"
+    _TMP_FILE_SERIES="/tmp/.tvdb.tmp.series"
+    _TMP_FILE_EPISODES="/tmp/.tvdb.tmp.episodes"
     _TOKEN=""
     _CURL=$(command -v curl) || command_not_found "curl"
     _JQ=$(command -v jq) || command_not_found "jq"
