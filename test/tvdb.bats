@@ -8,8 +8,8 @@ BATS_TEST_SKIPPED=
 
 clean_up_files() {
     rm -rf "$_TOKEN_FILE"
-    rm -rf "$_TMP_FILE_SERIES"
     rm -rf "$_TMP_FILE_EPISODES"
+    rm -rf "$_TMP_FILE_SERIES_OVERVIEW"
 }
 
 setup() {
@@ -24,7 +24,7 @@ setup() {
 
     _TEST_DIR="./test"
     _TOKEN_FILE="$_TEST_DIR/test.token"
-    _TMP_FILE_SERIES="$_TEST_DIR/test.series"
+    _TMP_FILE_SERIES_OVERVIEW="$_TEST_DIR/test.series"
     _TMP_FILE_EPISODES="$_TEST_DIR/test.episodes"
 
     source $_SCRIPT
@@ -121,7 +121,7 @@ teardown() {
     run get_series_id_from_result "$data"
     [ "$status" -eq 0 ]
     [ "$output" = "9999" ]
-    dataFromFile=$(cat "$_TMP_FILE_SERIES")
+    dataFromFile=$(cat "$_TMP_FILE_SERIES_OVERVIEW")
     [ "$dataFromFile" = "$data" ]
 }
 
@@ -132,7 +132,7 @@ teardown() {
     [ "${lines[0]}" = "121361" ]
     [ "${lines[1]}" = "311939" ]
     [ "${lines[2]}" = "321282" ]
-    dataFromFile=$(cat "$_TMP_FILE_SERIES")
+    dataFromFile=$(cat "$_TMP_FILE_SERIES_OVERVIEW")
     [ "$dataFromFile" = "$data" ]
 }
 
@@ -141,7 +141,7 @@ teardown() {
     run get_series_id_from_result "$data"
     [ "$status" -eq 1 ]
     [ "$output" = "$data" ]
-    run cat "_TMP_FILE_SERIES"
+    run cat "_TMP_FILE_SERIES_OVERVIEW"
     [ "$status" -eq 1 ]
 }
 
@@ -253,9 +253,8 @@ teardown() {
         echo "" > /dev/null
     }
     _DATE_AIRED="2019-05-05"
-    _SHOW_RATING=true
     data=$(cat "$_TEST_DIR/episodes.rating.reference.text")
-    run print_episodes_info "$_TEST_DIR/episodes.rating.testdata.json"
+    run print_episodes_info "$_TEST_DIR/episodes.rating.testdata.json" true
     [ "$status" -eq 0 ]
     [ "$output" = "$data" ]
 }
@@ -266,4 +265,10 @@ teardown() {
     run print_episodes_info "$_TEST_DIR/episodes.merge.reference.json"
     [ "$status" -eq 0 ]
     [ "$output" = "$data" ]
+}
+
+@test "CHECK: get_aired_season_from_file()" {
+    run get_aired_season_from_file "$_TEST_DIR/episodes.merge.reference.json" "tt8162428"
+    [ "$status" -eq 0 ]
+    [ "$output" = "1" ]
 }

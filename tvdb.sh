@@ -90,12 +90,14 @@ set_var() {
     _HOST="https://api.thetvdb.com"
     _IMDB_URL="https://www.imdb.com/title"
     _TOKEN_FILE="/tmp/.tvdb.token"
+    _TMP_FILE_SERIES_OVERVIEW="/tmp/.tvdb.tmp.series.overview"
     _TMP_FILE_SERIES="/tmp/.tvdb.tmp.series"
     _TMP_FILE_EPISODES="/tmp/.tvdb.tmp.episodes"
     _TOKEN=""
     _CURL=$(command -v curl) || command_not_found "curl"
     _JQ=$(command -v jq) || command_not_found "jq"
 
+    true > $_TMP_FILE_SERIES_OVERVIEW
     true > $_TMP_FILE_SERIES
     true > $_TMP_FILE_EPISODES
 }
@@ -105,6 +107,7 @@ set_api() {
     _API_LOGIN="$_HOST/login"
     _API_REFRESH_TOKEN="$_HOST/refresh_token"
     _API_SEARCH_SERIES="$_HOST/search/series"
+    _API_SERIES="$_HOST/series/{id}"
     _API_SERIES_EPISODES="$_HOST/series/{id}/episodes"
 }
 
@@ -158,7 +161,7 @@ get_token_from_result() {
 get_series_id_from_result() {
     # Return series id from $1 data
     if [[ "$1" == *"{\"data"* ]]; then
-        echo "$1" | tee "$_TMP_FILE_SERIES" | $_JQ -r '.data | .[].id'
+        echo "$1" | tee "$_TMP_FILE_SERIES_OVERVIEW" | $_JQ -r '.data | .[].id'
     else
         echo "$1" >&2 && exit 1
     fi
@@ -196,6 +199,15 @@ get_series_id() {
         --header 'Authorization: Bearer '"$_TOKEN" "$_API_SEARCH_SERIES?name=$_SEARCH_TEXT")
 
     get_series_id_from_result "$result"
+}
+
+get_series() {
+    # Call series API to get series data
+    # $1: series id
+    url=$(echo $_API_SERIES | sed -E 's/\{id\}/'"$id"'/')
+    $_CURL -sSX GET \
+        --header 'Accept: application/json' \
+        --header 'Authorization: Bearer '"$_TOKEN" "$url" > "$_TMP_FILE_SERIES"
 }
 
 get_episodes() {
@@ -237,16 +249,34 @@ get_series_firstaired_year() {
 
 get_imdb_id_from_file() {
     # Return imdb id from $1
-    $_JQ -r '.[] | select(.airedSeason!=0 and .firstAired>=$date) | .imdbId' --arg date "$(get_search_date)"< "$1"
+    $_JQ -r '.[] | select(.airedSeason!=0 and .firstAired>=$date) | .imdbId' --arg date "$(get_search_date)" < "$1"
+}
+
+get_aired_season_from_file() {
+    # Return airedSeason from $1
+    # $2: imdb id
+    $_JQ -r '.[] | select(.imdbId=="'"$2"'") | .airedSeason' < "$1"
 }
 
 get_imdb_rating() {
     # Get IMDb rating and inject imdbRating field into $1
     # $1: episodes data
-    local rating
+    # $2: series data
+    local imdbSeriesId seasonNb previousSeasonNb ratingData rating
     sed -i 's/imdbId.*,/& "imdbRating": "",/' "$1"
+    imdbSeriesId=$($_JQ -r '.data.imdbId' < "$2")
+    previousSeasonNb=""
     for id in $(get_imdb_id_from_file "$1"); do
-        rating=$($_CURL -sS "$_IMDB_URL/$id/" | grep 'itemprop=\"ratingValue' | sed -E 's/.*ratingValue\">//;s/<\/span.*//')
+        seasonNb=$(get_aired_season_from_file "$1" "$id")
+        if [[ "$seasonNb" != "$previousSeasonNb" ]]; then
+            ratingData=$($_CURL -sS "$_IMDB_URL/$imdbSeriesId/episodes?season=$seasonNb" \
+                | grep -B 1 'strong><a href="/title\|star__total' \
+                | grep 'href\|-rating' \
+                | sed -E 's/<strong.*title\///;s/\/"//;s/<span.*">//;s/<\/span>//;s/[[:space:]]//g' \
+                | awk '{if ($1 ~ "tt") {printf "\n%s ", $1}else{printf "%s", $1}}END{print ""}')
+            previousSeasonNb="$seasonNb"
+        fi
+        rating=$(echo "$ratingData" | grep "$id" | awk '{print $2}')
         if [[ "$rating" ]]; then
             sed -i "s/imdbId\": \"$id\", \"imdbRating\": \"\"/imdbId\": \"$id\", \"imdbRating\": \"$rating\"/" "$1"
         fi
@@ -313,8 +343,9 @@ print_series_info() {
 print_episodes_info() {
     # Print out series info
     # $1: episodes file
-    if [[ "${_SHOW_RATING:-}" ]]; then
-        get_imdb_rating "$_TMP_FILE_EPISODES"
+    # $2: series file
+    if [[ "${2:-}" ]]; then
+        get_imdb_rating "$1" "$2"
         printf "%b\n" "$($_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\\e[32m\(.episodeName)\\e[0m+\\e[33m\(.imdbRating)\\e[0m"' --arg date "$(get_search_date)"< "$1" | column -t -s "+")"
     else
         printf "%b\n" "$($_JQ -r -s '.[] | sort_by(.firstAired) | .[] | select(.airedSeason!=0 and .firstAired>=$date) | "\(.firstAired)+S\(.airedSeason)E\(.airedEpisodeNumber)+\\e[32m\(.episodeName)\\e[0m"' --arg date "$(get_search_date)"< "$1" | column -t -s"+")"
@@ -328,23 +359,28 @@ search_tv_series() {
         togglePrint=true
 
         if [[ "${_YEAR_RANGE_FIRSTAIRED:-}" ]]; then
-            year=$(get_series_firstaired_year "$id" "$_TMP_FILE_SERIES")
+            year=$(get_series_firstaired_year "$id" "$_TMP_FILE_SERIES_OVERVIEW")
             if [[  "$year" -lt "$_MIN_YEAR_FIRSTAIRED" || "$year" -gt "$_MAX_YEAR_FIRSTAIRED" ]]; then
                 togglePrint=false
             fi
         fi
 
         if [[ "${_CONTINUING_AIRED:-}" == true ]]; then
-            if [[ $(get_series_status "$id" "$_TMP_FILE_SERIES") != "Continuing" ]]; then
+            if [[ $(get_series_status "$id" "$_TMP_FILE_SERIES_OVERVIEW") != "Continuing" ]]; then
                 togglePrint=false
             fi
         fi
 
         if [[ "$togglePrint" == true ]]; then
             echo ""
-            print_series_info "$id" "$_TMP_FILE_SERIES"
+            print_series_info "$id" "$_TMP_FILE_SERIES_OVERVIEW"
             if [[ -z "${_SHOW_SERIES_ONLY:-}" ]]; then
-                get_episodes "$id" && print_episodes_info "$_TMP_FILE_EPISODES"
+                get_episodes "$id"
+                if [[ "${_SHOW_RATING:-}" ]]; then
+                    get_series "$id" && print_episodes_info "$_TMP_FILE_EPISODES" "$_TMP_FILE_SERIES"
+                else
+                    print_episodes_info "$_TMP_FILE_EPISODES"
+                fi
             fi
         fi
     done
