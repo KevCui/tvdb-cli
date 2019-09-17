@@ -12,7 +12,7 @@
 #/   -f               Filter episodes aired in the future
 #/   -d <date>        Filter episodes aired after the date, format like: 1999-12-20
 #/                    -d option overrules -f
-#/   -r               Show IMDb rating per episode (attention: it can be slow)
+#/   -r               Show IMDb rating and votes per episode
 #/   -h | --help      Display this help message
 #/
 #/ Examples:
