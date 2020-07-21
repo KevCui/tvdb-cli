@@ -1,5 +1,4 @@
-tvdb-cli
-========
+# tvdb-cli ![CI](https://github.com/KevCui/tvdb-cli/workflows/CI/badge.svg)
 
 A script to fetch your favorite TV show information from [TheTVDB](https://www.thetvdb.com/) using fast & furious [TheTVDB API v2](https://api.thetvdb.com/swagger#/)
 
@@ -157,6 +156,7 @@ Or
 ```
 ~$ ./tvdb.sh -c game of thrones
 ```
+
 No results? That's right!
 
 ## Run tests
