@@ -242,10 +242,12 @@ teardown() {
 }
 
 @test "CHECK: print_series_info()" {
-    data=$(cat "$_TEST_DIR/series.info.reference.text")
+    data=$(cat "$_TEST_DIR/series.info.reference.text" \
+        | sed -E 's/\s+$//g' \
+        | sed -E '/^\s*$/d')
     run print_series_info "321282" "$_TEST_DIR/multiple.series.testdata.json"
     [ "$status" -eq 0 ]
-    [ "$output" = "$data" ]
+    [ "$(sed -E 's/\s+$//g' <<< "$output" | sed -E '/^\s*$/d')" = "$data" ]
 }
 
 @test "CHECK: print_episodes_info(): with rating" {
